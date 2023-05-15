@@ -1,0 +1,86 @@
+﻿@page "/" 
+@*Raíz de la aplicación, como es una sola página se deja así*@
+
+<PageTitle>Subnetting</PageTitle>@*Título de pestaña*@
+
+@*Estructura de la calculadora*@
+<div id="container">
+    @*Caja de la dirección IP a insertar*@
+    <div id="parte1">
+        <label for="numIp" id="ip">Dirección IP: </label>
+        <input type="text" id="numIp" required placeholder="xxx.xxx.xxx.xxx/xx" @bind-value="direccionIP">
+        @*@bind-value -> Guarda el dato en la lista para usarlo*@
+    </div>
+
+    <div id="cantidadRedes">
+        <label>Numero de subredes:</label>
+        <input type="number" @bind-value="@numSubnets" />
+        <button @onclick="@CreateSubnets" id="change">Change</button>@*@onclick -> Al pulsar se ejecuta la función*@
+    </div>
+
+    @if (userSubnets.Count > 0) @*Si muestra si la lista no está vacía (Count=0), lo anterior se muestra siempre*@
+    {
+        <div id="parte2">
+            <label id="subnets">Subnets</label>
+        </div>
+
+        <label id="name">Name</label>
+        <div id="parte3">
+            @foreach (var subnet in userSubnets) @*Por cada elemento de la lista se crea un input*@
+            {
+                <input type="text" id="nameSubnet" required placeholder="Nombre" @bind-value="@subnet.Name" />
+            }
+        </div>
+
+        <label id="size">Size</label>
+        <div id="parte4">
+            @foreach (var subnet in userSubnets)
+            {
+                <input type="number" id="sizeSubnet" required placeholder="00" @bind-value="@subnet.Size" />
+            }
+        </div>
+
+        <button id="submit" @onclick="@CalculateSubnets">Calcular</button>
+
+    }
+
+    <div id="container2">
+        @if (string.IsNullOrEmpty(error) && resultSubnets.Count > 0)  
+        {    @*Si el error es nulo o vacío y existe resultados en la lista se muestra*@
+            <div id="boxTittle">Result</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tamaño</th>
+                        <th>Tamaño máximo</th>
+                        <th>Dirección Red</th>
+                        <th>Máscara red</th>
+                        <th>Rango Asignables</th>
+                        <th>Dirección Broadcast</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @*Muestra contenido de la lista*@
+                    @foreach (var subnet in resultSubnets)
+                    {
+                        <tr>
+                            <td>@subnet.Name</td>
+                            <td>@subnet.Size</td>
+                            <td>@subnet.HostMax</td>
+                            <td>@subnet.IPAddress</td>
+                            <td>@subnet.Mask</td>
+                            <td>@subnet.AsignableRange</td>
+                            <td>@subnet.Broadcast</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else if (!string.IsNullOrEmpty(error)) @*Si el error es lo contrario a nulo o vacío se muestra*@
+        {
+            <div id="error">@error</div>
+        }
+    </div>
+
+</div>
