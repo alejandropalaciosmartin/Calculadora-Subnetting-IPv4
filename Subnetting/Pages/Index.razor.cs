@@ -168,40 +168,16 @@ namespace Subnetting.Pages
         //MÉTODO QUE COMPRUEBA QUE EL NUMERO ESTÁ ENTRE 1 Y 255
         public static bool Range(int num) => num >= 0 && num< 256;
 
-
         //MÉTODO QUE PASA DE DECIMAL A BINARIO
         public static string DecimalABinario(int numDecimal) => Convert.ToString(numDecimal, 2);
 
-
         //MÉTODO QUE PASA DE BINARIO A DECIMAL
         public static int BinarioADecimal(string numBinario) => numBinario.Reverse().Select((c, i) => c == '1' ? (int)Math.Pow(2, i) : 0).Sum();
-
+        
         //MÉTODO QUE PASA DE IP EN BINARIO A SU FORMATO DECIMAL
-        public static string IpBinarioADecimal(string ipBinario)
-        {
-            string result = "";
-
-            result += BinarioADecimal(ipBinario.Substring(0, 8)) + ".";
-            result += BinarioADecimal(ipBinario.Substring(8, 8)) + ".";
-            result += BinarioADecimal(ipBinario.Substring(16, 8)) + ".";
-            result += BinarioADecimal(ipBinario.Substring(24, 8));
-
-            return result;
-        }
-
+        public static string IpBinarioADecimal(string ipBinario) => string.Join(".", Enumerable.Range(0, 4).Select(i => BinarioADecimal(ipBinario.Substring(i * 8, 8))));
+        
         //MÉTODO QUE HACE EL AND LÓGICO ENTRE DOS NÚMEROS BINARIOS
-        public static string AndLogico(string cadena1, string cadena2)
-        {
-            string resultado = "";
-
-            for (int i = 0; i < cadena1.Length; i++)
-            {
-                if (cadena1[i] == '1' && cadena2[i] == '1')
-                    resultado += "1";
-                else
-                    resultado += "0";
-            }
-            return resultado;
-        }
+        public static string AndLogico(string cadena1, string cadena2) => new string(cadena1.Zip(cadena2, (c1, c2) => (c1 == '1' && c2 == '1') ? '1' : '0').ToArray());
     }
 }
